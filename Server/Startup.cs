@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Hubs;
 using Server.Services;
+using StackExchange.Redis;
 
 namespace Server
 {
@@ -27,7 +28,22 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddRedis(options => options.ConnectionFactory = async writer =>
+                {
+                    var configuration = new ConfigurationOptions
+                    {
+
+                    };
+                    configuration.EndPoints.Add("localhost", 6379);
+
+                    return await ConnectionMultiplexer.ConnectAsync(configuration, writer);
+
+                    // or
+                    //return await ConnectionMultiplexer.ConnectAsync("localhost:6379", writer);
+                });
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient<IBackgroundService, BackgroundService>();
         }

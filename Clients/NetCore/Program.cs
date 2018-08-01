@@ -12,7 +12,7 @@ namespace NetCore
             Console.WriteLine("Press Ctrl+C to terminate.");
 
             var connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:5001/hubs/values")
+                .WithUrl("http://localhost:5001/hubs/values")
                 .Build();
             connection.On<string>("receiveMessage", message =>
             {
@@ -29,7 +29,7 @@ namespace NetCore
                 {
                     using(var client = new HttpClient())
                     {
-                        await client.GetAsync($"https://localhost:5001/api/values/{connectionId}/{message}");
+                        await client.GetAsync($"http://localhost:5001/api/values/{connectionId}/{message}");
                     }
                 });
             }
